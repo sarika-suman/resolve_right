@@ -12,6 +12,15 @@ function TicketsPage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const { user } = useUser();
 
+  const [stats, setStats] = useState({
+    total: 0,
+    resolved: 0,
+    pending: 0,
+    avgTime: '0h'
+  });
+
+  const COLORS = ['#2A5C8C', '#4CAF50', '#FF6B6B', '#e28743', '#9932CC'];
+
   const categoryData = [
     { name: 'Technology', value: 40 },
     { name: 'Accounts', value: 25 },
@@ -20,42 +29,48 @@ function TicketsPage() {
     { name: 'Returns', value: 8 }
   ];
 
-  const COLORS = ['#2A5C8C', '#4CAF50', '#FF6B6B', '#e28743', '#9932CC'];
+  useEffect(() => {
+    fetchTickets();
+    fetchStats();
+  }, []);
 
-  const stats = {
-    total: 243,
-    resolved: 195,
-    pending: 48,
-    avgTime: '2.4h'
+  const fetchTickets = () => {
+    axios.get('http://localhost:8080/tickets')
+      .then(response => setTickets(response.data))
+      .catch(err => console.error(err));
   };
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/tickets')
-      .then(response => {
-        setTickets(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching tickets:', error);
+  const fetchStats = async () => {
+    try {
+      const total = await axios.get('http://localhost:8080/tickets/count');
+      const resolved = await axios.get('http://localhost:8080/tickets/count/resolved');
+      const pending = await axios.get('http://localhost:8080/tickets/count/pending');
+
+      setStats({
+        total: total.data,
+        resolved: resolved.data,
+        pending: pending.data,
+        avgTime: '2.4h' // You can replace this with real API call if needed
       });
-  }, []);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
 
   const handleClose = async (ticketId) => {
     try {
       await axios.put(`http://localhost:8080/ticket/${ticketId}`);
-      setTickets(prev =>
-        prev.map(t =>
-          t.id === ticketId ? { ...t, status: 'Resolved' } : t
-        )
-      );
+      fetchTickets();
+      fetchStats(); // refresh stats
     } catch (error) {
-      console.error("Error resolving ticket:", error);
+      console.error("Error updating ticket:", error);
     }
   };
 
   const filteredTickets = tickets.filter(ticket => {
-    const matchCategory = categoryFilter === "All" || ticket.category === categoryFilter;
-    const matchStatus = statusFilter === "All" || ticket.status === statusFilter;
-    return matchCategory && matchStatus;
+    const categoryMatch = categoryFilter === "All" || ticket.category === categoryFilter;
+    const statusMatch = statusFilter === "All" || ticket.status === statusFilter;
+    return categoryMatch && statusMatch;
   });
 
   return (
@@ -103,41 +118,43 @@ function TicketsPage() {
                 filteredTickets.map(ticket => (
                   <div key={ticket.id} className="col-md-6 mb-4">
                     <div className="card shadow-sm h-100 bg-white" style={{ borderRadius: '12px' }}>
-                      <div className="card-body">
-                        <div className="d-flex justify-content-between align-items-center mb-2">
-                          <h5 className="card-title mb-0">Ticket: {ticket.ticketId}</h5>
-                          <small className="text-muted">
-                            {new Date(ticket.createdAt).toLocaleDateString()}
-                          </small>
-                        </div>
-
-                        <span className={`badge ${ticket.status === 'Resolved' ? 'bg-success' : 'bg-primary'} mb-2`}>
-                          {ticket.status}
-                        </span>
-
-                        <div className="mb-2">
-                          <small className="text-muted">From: </small>
-                          <span className="text-dark">{ticket.senderEmail}</span>
-                        </div>
-
-                        <div className="mb-2">
-                          <small className="text-muted">Description:</small>
-                          <span className="ms-1">{ticket.message}</span>
-                        </div>
-
+                      <div className="card-body d-flex flex-column justify-content-between">
                         <div>
-                          <small className="text-muted">Category: </small>
-                          <span className="badge bg-secondary">{ticket.category}</span>
+                          <div className="d-flex justify-content-between align-items-center mb-2">
+                            <h5 className="card-title mb-0">Ticket :{ticket.ticketId}</h5>
+                            <small className="text-muted">
+                              {new Date(ticket.createdAt).toLocaleDateString()}
+                            </small>
+                          </div>
+
+                          <span className={`badge ${ticket.status === 'Resolved' ? 'bg-success' : 'bg-primary'} mb-2`}>
+                            {ticket.status}
+                          </span>
+
+                          <div className="mb-2">
+                            <small className="text-muted">From: </small>
+                            <span className="text-dark">{ticket.senderEmail}</span>
+                          </div>
+
+                          <div className="mb-2">
+                            <small className="text-muted">Description:</small>
+                            <span className="ms-1">{ticket.message}</span>
+                          </div>
+
+                          <div>
+                            <small className="text-muted">Category: </small>
+                            <span className="badge bg-secondary">{ticket.category}</span>
+                          </div>
                         </div>
 
                         {/* Close Button */}
-                        <div className="d-flex justify-content-end mt-3">
-                          {ticket.status !== 'Resolved' && (
-                            <button className="btn btn-sm btn-outline-success" onClick={() => handleClose(ticket.id)}>
+                        {ticket.status !== 'Resolved' && (
+                          <div className="text-end mt-3">
+                            <button className="btn btn-outline-success btn-sm" onClick={() => handleClose(ticket.id)}>
                               Close
                             </button>
-                          )}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -150,7 +167,7 @@ function TicketsPage() {
             </div>
           </div>
 
-          {/* Statistics Section */}
+          {/* Stats Section */}
           <div className="row mb-5">
             <div className="col-md-6 mb-4">
               <div className="card shadow-sm h-100 bg-white">
@@ -213,44 +230,44 @@ function TicketsPage() {
               </div>
             </div>
           </div>
-
-          {/* Footer */}
-          <footer className="bg-dark text-light py-5 mt-5">
-            <div className="container">
-              <div className="row">
-                <div className="col-md-4 mb-4" id="about">
-                  <h5>Company</h5>
-                  <ul className="list-unstyled">
-                    <li><Link to="/about" className="text-light text-decoration-none">Our Story</Link></li>
-                    <li><Link to="/careers" className="text-light text-decoration-none">Careers</Link></li>
-                    <li><Link to="/contact" className="text-light text-decoration-none">Contact</Link></li>
-                  </ul>
-                </div>
-                <div className="col-md-4 mb-4" id="careers">
-                  <h5>Resources</h5>
-                  <ul className="list-unstyled">
-                    <li><Link to="/docs" className="text-light text-decoration-none">Documentation</Link></li>
-                    <li><Link to="/faq" className="text-light text-decoration-none">FAQ</Link></li>
-                    <li><Link to="/privacy" className="text-light text-decoration-none">Privacy Policy</Link></li>
-                  </ul>
-                </div>
-                <div className="col-md-4 mb-4" id="contact">
-                  <h5>Get Started</h5>
-                  <button className="btn btn-outline-light">Free Trial</button>
-                  <p className="mt-3">New Horizon College<br />Bangalore, India</p>
-                </div>
-              </div>
-              <div className="row mt-4 pt-3 border-top">
-                <div className="col-12 text-center">
-                  <p className="mb-0 text-muted">
-                    © 2035 ResolveRight. Powered by Us
-                  </p>
-                </div>
-              </div>
-            </div>
-          </footer>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-dark text-light py-5 mt-5">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-4 mb-4" id="about">
+              <h5>Company</h5>
+              <ul className="list-unstyled">
+                <li><Link to="/about" className="text-light text-decoration-none">Our Story</Link></li>
+                <li><Link to="/careers" className="text-light text-decoration-none">Careers</Link></li>
+                <li><Link to="/contact" className="text-light text-decoration-none">Contact</Link></li>
+              </ul>
+            </div>
+            <div className="col-md-4 mb-4" id="careers">
+              <h5>Resources</h5>
+              <ul className="list-unstyled">
+                <li><Link to="/docs" className="text-light text-decoration-none">Documentation</Link></li>
+                <li><Link to="/faq" className="text-light text-decoration-none">FAQ</Link></li>
+                <li><Link to="/privacy" className="text-light text-decoration-none">Privacy Policy</Link></li>
+              </ul>
+            </div>
+            <div className="col-md-4 mb-4" id="contact">
+              <h5>Get Started</h5>
+              <button className="btn btn-outline-light">Free Trial</button>
+              <p className="mt-3">New Horizon College<br />Bangalore, India</p>
+            </div>
+          </div>
+          <div className="row mt-4 pt-3 border-top">
+            <div className="col-12 text-center">
+              <p className="mb-0 text-muted">
+                © 2035 ResolveRight. Powered by Us
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
