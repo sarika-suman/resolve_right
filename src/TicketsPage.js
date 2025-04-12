@@ -19,15 +19,9 @@ function TicketsPage() {
     avgTime: '0h'
   });
 
-  const COLORS = ['#2A5C8C', '#4CAF50', '#FF6B6B', '#e28743', '#9932CC'];
+  const [categoryCounts, setCategoryCounts] = useState([]);
 
-  const categoryData = [
-    { name: 'Technology', value: 40 },
-    { name: 'Accounts', value: 25 },
-    { name: 'Delivery', value: 15 },
-    { name: 'Finance', value: 12 },
-    { name: 'Returns', value: 8 }
-  ];
+  const COLORS = ['#2A5C8C', '#4CAF50', '#FF6B6B', '#e28743', '#9932CC'];
 
   useEffect(() => {
     fetchTickets();
@@ -36,8 +30,23 @@ function TicketsPage() {
 
   const fetchTickets = () => {
     axios.get('http://localhost:8080/tickets')
-      .then(response => setTickets(response.data))
+      .then(response => {
+        setTickets(response.data);
+        computeCategoryData(response.data);
+      })
       .catch(err => console.error(err));
+  };
+
+  const computeCategoryData = (tickets) => {
+    const counts = {};
+    tickets.forEach(ticket => {
+      counts[ticket.category] = (counts[ticket.category] || 0) + 1;
+    });
+    const data = Object.keys(counts).map(category => ({
+      name: category,
+      value: counts[category]
+    }));
+    setCategoryCounts(data);
   };
 
   const fetchStats = async () => {
@@ -176,7 +185,7 @@ function TicketsPage() {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={categoryData}
+                        data={categoryCounts}
                         dataKey="value"
                         nameKey="name"
                         cx="50%"
@@ -184,7 +193,7 @@ function TicketsPage() {
                         outerRadius={100}
                         label
                       >
-                        {categoryData.map((entry, index) => (
+                        {categoryCounts.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
