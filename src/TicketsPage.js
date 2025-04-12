@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import logo from './assets/logo.png';
 import { Link } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 
@@ -29,7 +28,7 @@ function TicketsPage() {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/tickets')
+    axios.get('http://localhost:8080/tickets')
       .then(response => {
         setTickets(response.data);
       })
@@ -40,124 +39,145 @@ function TicketsPage() {
 
   return (
     <div className="App">
-      {/* Header removed as requested - using the one from App.js instead */}
+      <div className="d-flex justify-content-center py-5">
+        <div className="container" style={{ maxWidth: '1100px' }}>
+          <h2 className="mb-4 text-center ticket-heading">Tickets Dashboard</h2>
 
-      {/* Main Content */}
-      <div className="container py-5">
-        <h2 className="mb-4 text-center ticket-heading">Tickets Dashboard</h2>
-
-        {/* Filters */}
-        <div className="row mb-4">
-          <div className="col-md-6 mb-3">
-            <label className="form-label fw-bold">Filter by Category</label>
-            <select className="form-select">
-              <option>All</option>
-              <option>Technology</option>
-              <option>Accounts</option>
-              <option>Delivery</option>
-              <option>Finance</option>
-              <option>Returns</option>
-            </select>
-          </div>
-          <div className="col-md-6 mb-3">
-            <label className="form-label fw-bold">Filter by Status</label>
-            <select className="form-select">
-              <option>All</option>
-              <option>Open</option>
-              <option>In Progress</option>
-              <option>Resolved</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Ticket List */}
-        <div className="ticket-scroll-area border rounded p-3 mb-5" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-          <div className="row">
-            {tickets.length > 0 ? (
-              tickets.map(ticket => (
-                <div key={ticket.id} className="col-md-6 mb-4">
-                  <div className="card shadow-sm h-100">
-                    <div className="card-body">
-                      <div className="d-flex justify-content-between mb-3">
-                        <h5 className="card-title mb-0">Ticket #{ticket.id}</h5>
-                        <span className="badge bg-primary">{ticket.status}</span>
-                      </div>
-                      <p className="card-text">{ticket.description}</p>
-                      <div className="mt-2">
-                        <small className="text-muted">Category: </small>
-                        <span className="badge bg-secondary">{ticket.category}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-12 text-center py-5">
-                <p className="text-muted">No tickets found.</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Statistics Section */}
-        <div className="row mb-5">
-          {/* Pie Chart */}
-          <div className="col-md-6 mb-4">
-            <div className="card shadow-sm h-100 bg-white">
-              <div className="card-body">
-                <h5 className="card-title text-center mb-4">Ticket Distribution by Category</h5>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={categoryData}
-                      dataKey="value"
-                      nameKey="name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={100}
-                      label
-                    >
-                      {categoryData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend layout="vertical" align="right" verticalAlign="middle" />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+          {/* Filters */}
+          <div className="row mb-4">
+            <div className="col-md-6 mb-3">
+              <label className="form-label fw-bold">Filter by Category</label>
+              <select className="form-select">
+                <option>All</option>
+                <option>Technology</option>
+                <option>Accounts</option>
+                <option>Delivery</option>
+                <option>Finance</option>
+                <option>Returns</option>
+              </select>
+            </div>
+            <div className="col-md-6 mb-3">
+              <label className="form-label fw-bold">Filter by Status</label>
+              <select className="form-select">
+                <option>All</option>
+                <option>Open</option>
+                <option>In Progress</option>
+                <option>Resolved</option>
+              </select>
             </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="col-md-6">
-            <div className="row h-100">
-              <div className="col-6 mb-4">
-                <div className="card stat-card h-100 text-center p-3">
-                  <i className="bi bi-ticket-perforated fs-2 mb-2 text-primary"></i>
-                  <h1 className="display-5">{stats.total}</h1>
-                  <p className="text-muted mb-0">Total Tickets</p>
+          {/* Ticket List */}
+          <div className="ticket-scroll-area border rounded p-3 mb-5 bg-white" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+            <div className="row">
+              {tickets.length > 0 ? (
+                tickets.map(ticket => (
+                  <div key={ticket.id} className="col-md-6 mb-4">
+                    <div className="card shadow-sm h-100 bg-white" style={{ borderRadius: '12px' }}>
+                      <div className="card-body">
+                        {/* Top row: ID and Date */}
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <h5 className="card-title mb-0">Ticket :{ticket.ticketId}</h5>
+                          <small className="text-muted">
+                            {new Date(ticket.createdAt).toLocaleDateString()}
+                          </small>
+                        </div>
+
+                        {/* Status */}
+                        <span className={`badge ${ticket.status === 'Resolved' ? 'bg-success' : 'bg-primary'} mb-2`}>
+                          {ticket.status}
+                        </span>
+
+
+                        {/* Email */}
+                        <div className="mb-2">
+                          <small className="text-muted">From: </small>
+                          <span className="text-dark">{ticket.senderEmail}</span>
+                        </div>
+                        
+                            
+                            {/* Description */}
+<div className="mb-2">
+  <small className="text-muted">Description:</small>
+  <span className="ms-1">{ticket.message}</span>
+</div>
+
+                        {/* Category */}
+                        <div>
+                          <small className="text-muted">Category: </small>
+                          <span className="badge bg-secondary">{ticket.category}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="col-12 text-center py-5">
+                  <p className="text-muted">No tickets found.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Statistics Section */}
+          <div className="row mb-5">
+            <div className="col-md-6 mb-4">
+              <div className="card shadow-sm h-100 bg-white">
+                <div className="card-body">
+                  <h5 className="card-title text-center mb-4">Ticket Distribution by Category</h5>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={categoryData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={100}
+                        label
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend layout="vertical" align="right" verticalAlign="middle" />
+                    </PieChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-              <div className="col-6 mb-4">
-                <div className="card stat-card h-100 text-center p-3">
-                  <i className="bi bi-check-circle fs-2 mb-2 text-success"></i>
-                  <h1 className="display-5">{stats.resolved}</h1>
-                  <p className="text-muted mb-0">Resolved Tickets</p>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="col-md-6">
+              <div className="row h-100">
+                <div className="col-6 mb-4">
+                  <div className="card stat-card h-100 text-center p-3">
+                    <i className="bi bi-ticket-perforated fs-2 mb-2 text-primary"></i>
+                    <h1 className="display-5">{stats.total}</h1>
+                    <p className="text-muted mb-0">Total Tickets</p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-6 mb-4">
-                <div className="card stat-card h-100 text-center p-3">
-                  <i className="bi bi-clock-history fs-2 mb-2 text-warning"></i>
-                  <h1 className="display-5">{stats.pending}</h1>
-                  <p className="text-muted mb-0">Pending Tickets</p>
+                <div className="col-6 mb-4">
+                  <div className="card stat-card h-100 text-center p-3">
+                    <i className="bi bi-check-circle fs-2 mb-2 text-success"></i>
+                    <h1 className="display-5">{stats.resolved}</h1>
+                    <p className="text-muted mb-0">Resolved Tickets</p>
+                  </div>
                 </div>
-              </div>
-              <div className="col-6 mb-4">
-                <div className="card stat-card h-100 text-center p-3">
-                  <i className="bi bi-speedometer2 fs-2 mb-2 text-info"></i>
-                  <h1 className="display-5">{stats.avgTime}</h1>
-                  <p className="text-muted mb-0">Avg. Resolution Time</p>
+                <div className="col-6 mb-4">
+                  <div className="card stat-card h-100 text-center p-3">
+                    <i className="bi bi-clock-history fs-2 mb-2 text-warning"></i>
+                    <h1 className="display-5">{stats.pending}</h1>
+                    <p className="text-muted mb-0">Pending Tickets</p>
+                  </div>
+                </div>
+                <div className="col-6 mb-4">
+                  <div className="card stat-card h-100 text-center p-3">
+                    <i className="bi bi-speedometer2 fs-2 mb-2 text-info"></i>
+                    <h1 className="display-5">{stats.avgTime}</h1>
+                    <p className="text-muted mb-0">Avg. Resolution Time</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -188,7 +208,7 @@ function TicketsPage() {
             <div className="col-md-4 mb-4" id="contact">
               <h5>Get Started</h5>
               <button className="btn btn-outline-light">Free Trial</button>
-              <p className="mt-3"> New Horizon College<br />Bangalore, India</p>
+              <p className="mt-3">New Horizon College<br />Bangalore, India</p>
             </div>
           </div>
           <div className="row mt-4 pt-3 border-top">
