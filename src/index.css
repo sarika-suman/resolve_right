@@ -1,6 +1,5 @@
 /* index.css */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&display=swap');
-/* Import Leaflet styles */
 @import 'leaflet/dist/leaflet.css';
 
 /* Light Theme (default) */
@@ -53,37 +52,42 @@ code {
   top:0;
   background-color: var(--header-bg);
   padding: 25px 0;
- /* Reduced left padding on header */
 }
+
+.ticketspage .header-strip { /* 👇 ADDED FOR TICKETS PAGE */
+  background-color: #004080 !important;
+}
+
 .header-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-left: 10px; /* reduce left space here */
+  padding-left: 10px;
 }
+
 /* Logo */
 .logo {
   width: 60px;
   height: 60px;
   border-radius: 50%;
   margin-right: 10px;
-  margin-left: 0 !important; /* Ensure no left margin */
+  margin-left: 0 !important;
 }
 
-/* Brand Title Next to Logo */
+/* Brand Title */
 .brand-title {
-  color: #2A5C8C; /* Custom brand color */
+  color: #2A5C8C;
   font-family: 'Poppins', sans-serif;
   font-weight: 800;
   font-size: 2.5rem;
   margin: 0;
-  padding-left: 5px; /* Tighten space between logo and title */
+  padding-left: 5px;
 }
 
 /* Navigation */
 .menu-link {
-  color: #2A5C8C !important; /* Changed to a rich blue tone */
-  font-family: 'Poppins', sans-serif; /* Modern font */
+  color: #2A5C8C !important;
+  font-family: 'Poppins', sans-serif;
   font-weight: 550;
   font-size: 1.1rem;
   margin-left: 20px;
@@ -99,7 +103,7 @@ code {
 
 .menu-box {
   background-color: white;
-  border-radius: 20px; /* increased from 8px to 20px */
+  border-radius: 20px;
   padding: 10px 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
 }
@@ -113,14 +117,12 @@ code {
   text-align: center;
 }
 
-/* Hero Heading */
 .hero-section h1 {
   font-size: 3.2rem;
   font-weight: 700;
   color: #004080;
 }
 
-/* Hero Paragraph */
 .hero-section p {
   font-size: 1.25rem;
   max-width: 800px;
@@ -129,7 +131,6 @@ code {
   color: #444;
 }
 
-/* Hero Image */
 .hero-section img {
   border: 3px solid #004080;
   border-radius: 44px;
@@ -137,17 +138,17 @@ code {
   height: auto;
   margin-top: 20px;
 }
+
 /* Stats Section */
 .stats-section {
   background-color: var(--card-bg);
 }
 
 .stats-section h3 {
-  color: #001F3F; /* Darker blue */
+  color: #001F3F;
   font-weight: bold;
-  font-size: 2rem; /* Increased size */
+  font-size: 2rem;
 }
-
 
 /* Floating Cards */
 .card1-floating {
@@ -162,8 +163,6 @@ code {
   left: 30px;
 }
 
-
-
 /* Axis Details Card */
 .axis-details {
   background-color: white;
@@ -176,7 +175,6 @@ code {
   margin-bottom: 0.5rem;
 }
 
-/* Image Container */
 .image-container {
   padding: 20px;
   background: white;
@@ -223,7 +221,7 @@ footer a:hover {
 
 /* Buttons */
 .btn-primary {
-  background-color: #2D3748; /* Coral Orange */
+  background-color: #2D3748;
   color: white;
   border: none;
   border-radius: 50px;
@@ -231,16 +229,12 @@ footer a:hover {
   font-weight: 500;
   transition: background-color 0.3s ease;
 }
+
 .btn-primary:hover {
-  background-color: #1a202c; /* Same as darker hover for primary */
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 10px 24px;
-  font-weight: 500;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  transform: translateY(-2px); /* optional subtle lift effect */
+  background-color: #1a202c;
+  transform: translateY(-2px);
 }
+
 .btn-outline-secondary {
   background-color: #2D3748;
   color: white;
@@ -252,24 +246,17 @@ footer a:hover {
 }
 
 .btn-outline-secondary:hover {
-  background-color: #1a202c; /* Same as darker hover for primary */
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 10px 24px;
-  font-weight: 500;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  transform: translateY(-2px); /* optional subtle lift effect */
+  background-color: #1a202c;
+  transform: translateY(-2px);
 }
 
-
-
-/* Borders and shadows (cards, boxes) */
+/* Borders and shadows */
 .border,
 .shadow-sm {
   background-color: var(--card-bg);
   color: var(--text-color);
 }
+
 .login-btn {
   background-color: #f49424;
   color: #2D3748;
@@ -286,10 +273,11 @@ footer a:hover {
 .login-btn:hover {
   background-color: #5c8ed8;
 }
+
 .menu-box .d-flex {
-  gap: 50px; /* or any spacing you prefer */
+  gap: 50px;
 }
-/* Left Split Section Text Styling */
+
 .left-split-heading {
   color: #192a47;
   font-size: 4rem;
@@ -302,13 +290,12 @@ footer a:hover {
   font-size: 1.3rem;
   text-align: left;
 }
-/* Section 2 Styling */
+
 .how-it-works-section h2 {
   font-size: 3.8rem;
-  color: #2D3748  !important;; /* Pink */
+  color: #2D3748 !important;
   font-weight: 700;
   text-align: left;
-
 }
 
 .how-it-works-section .image-step {
@@ -342,15 +329,16 @@ footer a:hover {
 .how-it-works-section .btn-primary {
   padding: 0.75rem 2rem;
   font-size: 1.1rem;
-  border-radius: 2rem; /* More rounded */
+  border-radius: 2rem;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .how-it-works-section .btn-primary:hover {
   background-color: #084298;
 }
+
 #how-it-works .row {
-  gap: 2rem; /* Adds space between the image and text columns */
+  gap: 2rem;
 }
 
 #how-it-works img {
@@ -359,16 +347,16 @@ footer a:hover {
 }
 
 .stats-section h2 {
-  font-size: 3.0rem; /* Increase or tweak as needed */
-  color: #001F3F;     /* Optional: Dark Blue */
+  font-size: 3.0rem;
+  color: #001F3F;
   font-weight: bold;
 }
 
 /* Ticket Dashboard */
 .ticket-heading {
-  color: #1d2a3e;         /* Change color (blue) */
-  font-size: 2.5rem;      /* Change font size */
-  font-family: 'Poppins', sans-serif;  /* Change font */
+  color: #1d2a3e;
+  font-size: 2.5rem;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -387,7 +375,6 @@ footer a:hover {
   transform: translateY(-5px);
 }
 
-/* Badge Styling */
 .badge {
   font-size: 0.9rem;
   padding: 0.4em 0.6em;
@@ -410,7 +397,6 @@ footer a:hover {
   background-color: #0dcaf0 !important;
 }
 
-/* Stats Cards */
 .card h5 {
   font-size: 1.1rem;
 }
@@ -459,6 +445,7 @@ footer a:hover {
     font-size: 2rem;
   }
 }
+
 /* Pie Chart Container */
 .card.bg-white {
   background-color: #fff !important;
@@ -475,9 +462,11 @@ footer a:hover {
 .stat-card:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
+
 html {
   scroll-behavior: smooth;
 }
+
 /* CTA Button Container Fix */
 .cta-buttons {
   gap: 1.5rem;

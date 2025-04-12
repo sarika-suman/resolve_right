@@ -5,9 +5,11 @@ import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import logo from './assets/logo.png';
 import { Link } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
 
 function TicketsPage() {
   const [tickets, setTickets] = useState([]);
+  const { user } = useUser();
 
   const categoryData = [
     { name: 'Technology', value: 40 },
@@ -38,33 +40,7 @@ function TicketsPage() {
 
   return (
     <div className="App">
-      <header className="header-strip sticky-top bg-white">
-        <div className="container d-flex justify-content-between align-items-center">
-          {/* Left - Logo + Title */}
-          <div className="d-flex align-items-center">
-            <img src={logo} alt="Logo" className="logo" />
-            <Link to="/" className="text-decoration-none">
-              <h1 className="brand-title mb-0 text-dark">ResolveRight</h1>
-            </Link>
-          </div>
-
-          {/* Right - Menu + Button */}
-          <div className="d-flex align-items-center gap-4">
-            <nav className="menu-box d-flex align-items-center">
-              <Link to="/" className="menu-link">Home</Link>
-              <a href="#about" className="menu-link">About</a>
-              <a href="#careers" className="menu-link">Careers</a>
-              <a href="#contact" className="menu-link">Contact Us</a>
-            </nav>
-
-            <a href="#login">
-              <button className="login-btn">
-                Login/Signup <i className="bi bi-box-arrow-in-right me-2"></i>
-              </button>
-            </a>
-          </div>
-        </div>
-      </header>
+      {/* Header removed as requested - using the one from App.js instead */}
 
       {/* Main Content */}
       <div className="container py-5">
@@ -75,7 +51,7 @@ function TicketsPage() {
           <div className="col-md-6 mb-3">
             <label className="form-label fw-bold">Filter by Category</label>
             <select className="form-select">
-              <option> All</option>
+              <option>All</option>
               <option>Technology</option>
               <option>Accounts</option>
               <option>Delivery</option>
@@ -196,17 +172,17 @@ function TicketsPage() {
             <div className="col-md-4 mb-4" id="about">
               <h5>Company</h5>
               <ul className="list-unstyled">
-                <li><a href="#about" className="text-light text-decoration-none">Our Story</a></li>
-                <li><a href="#careers" className="text-light text-decoration-none">Careers</a></li>
-                <li><a href="#contact" className="text-light text-decoration-none">Contact</a></li>
+                <li><Link to="/about" className="text-light text-decoration-none">Our Story</Link></li>
+                <li><Link to="/careers" className="text-light text-decoration-none">Careers</Link></li>
+                <li><Link to="/contact" className="text-light text-decoration-none">Contact</Link></li>
               </ul>
             </div>
             <div className="col-md-4 mb-4" id="careers">
               <h5>Resources</h5>
               <ul className="list-unstyled">
-                <li><a href="#docs" className="text-light text-decoration-none">Documentation</a></li>
-                <li><a href="#faq" className="text-light text-decoration-none">FAQ</a></li>
-                <li><a href="#privacy" className="text-light text-decoration-none">Privacy Policy</a></li>
+                <li><Link to="/docs" className="text-light text-decoration-none">Documentation</Link></li>
+                <li><Link to="/faq" className="text-light text-decoration-none">FAQ</Link></li>
+                <li><Link to="/privacy" className="text-light text-decoration-none">Privacy Policy</Link></li>
               </ul>
             </div>
             <div className="col-md-4 mb-4" id="contact">
