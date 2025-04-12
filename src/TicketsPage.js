@@ -8,6 +8,8 @@ import { useUser } from '@clerk/clerk-react';
 
 function TicketsPage() {
   const [tickets, setTickets] = useState([]);
+  const [categoryFilter, setCategoryFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
   const { user } = useUser();
 
   const categoryData = [
@@ -37,6 +39,25 @@ function TicketsPage() {
       });
   }, []);
 
+  const handleClose = async (ticketId) => {
+    try {
+      await axios.put(`http://localhost:8080/ticket/${ticketId}`);
+      setTickets(prev =>
+        prev.map(t =>
+          t.id === ticketId ? { ...t, status: 'Resolved' } : t
+        )
+      );
+    } catch (error) {
+      console.error("Error resolving ticket:", error);
+    }
+  };
+
+  const filteredTickets = tickets.filter(ticket => {
+    const matchCategory = categoryFilter === "All" || ticket.category === categoryFilter;
+    const matchStatus = statusFilter === "All" || ticket.status === statusFilter;
+    return matchCategory && matchStatus;
+  });
+
   return (
     <div className="App">
       <div className="d-flex justify-content-center py-5">
@@ -47,21 +68,29 @@ function TicketsPage() {
           <div className="row mb-4">
             <div className="col-md-6 mb-3">
               <label className="form-label fw-bold">Filter by Category</label>
-              <select className="form-select">
+              <select
+                className="form-select"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
                 <option>All</option>
                 <option>Technology</option>
                 <option>Accounts</option>
                 <option>Delivery</option>
                 <option>Finance</option>
-                <option>Returns</option>
+                <option>Product</option>
+                <option>Refund</option>
               </select>
             </div>
             <div className="col-md-6 mb-3">
               <label className="form-label fw-bold">Filter by Status</label>
-              <select className="form-select">
+              <select
+                className="form-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
                 <option>All</option>
                 <option>Open</option>
-                <option>In Progress</option>
                 <option>Resolved</option>
               </select>
             </div>
@@ -70,42 +99,44 @@ function TicketsPage() {
           {/* Ticket List */}
           <div className="ticket-scroll-area border rounded p-3 mb-5 bg-white" style={{ maxHeight: '500px', overflowY: 'auto' }}>
             <div className="row">
-              {tickets.length > 0 ? (
-                tickets.map(ticket => (
+              {filteredTickets.length > 0 ? (
+                filteredTickets.map(ticket => (
                   <div key={ticket.id} className="col-md-6 mb-4">
                     <div className="card shadow-sm h-100 bg-white" style={{ borderRadius: '12px' }}>
                       <div className="card-body">
-                        {/* Top row: ID and Date */}
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                          <h5 className="card-title mb-0">Ticket :{ticket.ticketId}</h5>
+                          <h5 className="card-title mb-0">Ticket: {ticket.ticketId}</h5>
                           <small className="text-muted">
                             {new Date(ticket.createdAt).toLocaleDateString()}
                           </small>
                         </div>
 
-                        {/* Status */}
                         <span className={`badge ${ticket.status === 'Resolved' ? 'bg-success' : 'bg-primary'} mb-2`}>
                           {ticket.status}
                         </span>
 
-
-                        {/* Email */}
                         <div className="mb-2">
                           <small className="text-muted">From: </small>
                           <span className="text-dark">{ticket.senderEmail}</span>
                         </div>
-                        
-                            
-                            {/* Description */}
-<div className="mb-2">
-  <small className="text-muted">Description:</small>
-  <span className="ms-1">{ticket.message}</span>
-</div>
 
-                        {/* Category */}
+                        <div className="mb-2">
+                          <small className="text-muted">Description:</small>
+                          <span className="ms-1">{ticket.message}</span>
+                        </div>
+
                         <div>
                           <small className="text-muted">Category: </small>
                           <span className="badge bg-secondary">{ticket.category}</span>
+                        </div>
+
+                        {/* Close Button */}
+                        <div className="d-flex justify-content-end mt-3">
+                          {ticket.status !== 'Resolved' && (
+                            <button className="btn btn-sm btn-outline-success" onClick={() => handleClose(ticket.id)}>
+                              Close
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -182,44 +213,44 @@ function TicketsPage() {
               </div>
             </div>
           </div>
+
+          {/* Footer */}
+          <footer className="bg-dark text-light py-5 mt-5">
+            <div className="container">
+              <div className="row">
+                <div className="col-md-4 mb-4" id="about">
+                  <h5>Company</h5>
+                  <ul className="list-unstyled">
+                    <li><Link to="/about" className="text-light text-decoration-none">Our Story</Link></li>
+                    <li><Link to="/careers" className="text-light text-decoration-none">Careers</Link></li>
+                    <li><Link to="/contact" className="text-light text-decoration-none">Contact</Link></li>
+                  </ul>
+                </div>
+                <div className="col-md-4 mb-4" id="careers">
+                  <h5>Resources</h5>
+                  <ul className="list-unstyled">
+                    <li><Link to="/docs" className="text-light text-decoration-none">Documentation</Link></li>
+                    <li><Link to="/faq" className="text-light text-decoration-none">FAQ</Link></li>
+                    <li><Link to="/privacy" className="text-light text-decoration-none">Privacy Policy</Link></li>
+                  </ul>
+                </div>
+                <div className="col-md-4 mb-4" id="contact">
+                  <h5>Get Started</h5>
+                  <button className="btn btn-outline-light">Free Trial</button>
+                  <p className="mt-3">New Horizon College<br />Bangalore, India</p>
+                </div>
+              </div>
+              <div className="row mt-4 pt-3 border-top">
+                <div className="col-12 text-center">
+                  <p className="mb-0 text-muted">
+                    © 2035 ResolveRight. Powered by Us
+                  </p>
+                </div>
+              </div>
+            </div>
+          </footer>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-dark text-light py-5 mt-5">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-4 mb-4" id="about">
-              <h5>Company</h5>
-              <ul className="list-unstyled">
-                <li><Link to="/about" className="text-light text-decoration-none">Our Story</Link></li>
-                <li><Link to="/careers" className="text-light text-decoration-none">Careers</Link></li>
-                <li><Link to="/contact" className="text-light text-decoration-none">Contact</Link></li>
-              </ul>
-            </div>
-            <div className="col-md-4 mb-4" id="careers">
-              <h5>Resources</h5>
-              <ul className="list-unstyled">
-                <li><Link to="/docs" className="text-light text-decoration-none">Documentation</Link></li>
-                <li><Link to="/faq" className="text-light text-decoration-none">FAQ</Link></li>
-                <li><Link to="/privacy" className="text-light text-decoration-none">Privacy Policy</Link></li>
-              </ul>
-            </div>
-            <div className="col-md-4 mb-4" id="contact">
-              <h5>Get Started</h5>
-              <button className="btn btn-outline-light">Free Trial</button>
-              <p className="mt-3">New Horizon College<br />Bangalore, India</p>
-            </div>
-          </div>
-          <div className="row mt-4 pt-3 border-top">
-            <div className="col-12 text-center">
-              <p className="mb-0 text-muted">
-                © 2035 ResolveRight. Powered by Us
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
