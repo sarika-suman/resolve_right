@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import logo from './assets/logo.png';
+import { Link } from 'react-router-dom';
 
 function TicketsPage() {
   const [tickets, setTickets] = useState([]);
@@ -15,7 +17,7 @@ function TicketsPage() {
     { name: 'Returns', value: 8 }
   ];
 
-  const COLORS = ['#2A5C8C', '#4CAF50', '#FF6B6B', '#FFD700', '#9932CC'];
+  const COLORS = ['#2A5C8C', '#4CAF50', '#FF6B6B', '#e28743', '#9932CC'];
 
   const stats = {
     total: 243,
@@ -36,38 +38,44 @@ function TicketsPage() {
 
   return (
     <div className="App">
-      {/* Header */}
-      <header className="header-strip">
+      <header className="header-strip sticky-top bg-white">
         <div className="container d-flex justify-content-between align-items-center">
+          {/* Left - Logo + Title */}
           <div className="d-flex align-items-center">
-            <img 
-              src="https://via.placeholder.com/40x40" 
-              alt="logo" 
-              className="logo"
-            />
-            <h1 className="text-white mb-0 ms-2">ResolveRight</h1>
+            <img src={logo} alt="Logo" className="logo" />
+            <Link to="/" className="text-decoration-none">
+              <h1 className="brand-title mb-0 text-dark">ResolveRight</h1>
+            </Link>
           </div>
-          <nav className="menu-box">
-            <div className="d-flex">
-              <a href="#home" className="menu-link">Home</a>
+
+          {/* Right - Menu + Button */}
+          <div className="d-flex align-items-center gap-4">
+            <nav className="menu-box d-flex align-items-center">
+              <Link to="/" className="menu-link">Home</Link>
               <a href="#about" className="menu-link">About</a>
+              <a href="#careers" className="menu-link">Careers</a>
               <a href="#contact" className="menu-link">Contact Us</a>
-              <a href="#login" className="menu-link">Login/Signup</a>
-            </div>
-          </nav>
+            </nav>
+
+            <a href="#login">
+              <button className="login-btn">
+                Login/Signup <i className="bi bi-box-arrow-in-right me-2"></i>
+              </button>
+            </a>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
       <div className="container py-5">
-        <h2 className="mb-4 text-center">Tickets Dashboard</h2>
+        <h2 className="mb-4 text-center ticket-heading">Tickets Dashboard</h2>
 
         {/* Filters */}
         <div className="row mb-4">
           <div className="col-md-6 mb-3">
             <label className="form-label fw-bold">Filter by Category</label>
             <select className="form-select">
-              <option>All Categories</option>
+              <option> All</option>
               <option>Technology</option>
               <option>Accounts</option>
               <option>Delivery</option>
@@ -78,7 +86,7 @@ function TicketsPage() {
           <div className="col-md-6 mb-3">
             <label className="form-label fw-bold">Filter by Status</label>
             <select className="form-select">
-              <option>All Statuses</option>
+              <option>All</option>
               <option>Open</option>
               <option>In Progress</option>
               <option>Resolved</option>
@@ -119,7 +127,7 @@ function TicketsPage() {
         <div className="row mb-5">
           {/* Pie Chart */}
           <div className="col-md-6 mb-4">
-            <div className="card shadow-sm h-100">
+            <div className="card shadow-sm h-100 bg-white">
               <div className="card-body">
                 <h5 className="card-title text-center mb-4">Ticket Distribution by Category</h5>
                 <ResponsiveContainer width="100%" height={300}>
@@ -134,10 +142,7 @@ function TicketsPage() {
                       label
                     >
                       {categoryData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={COLORS[index % COLORS.length]} 
-                        />
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -148,52 +153,55 @@ function TicketsPage() {
             </div>
           </div>
 
-          {/* Statistics Cards */}
+          {/* Stats Cards */}
           <div className="col-md-6">
             <div className="row h-100">
               <div className="col-6 mb-4">
-                <div className="card bg-primary text-white h-100 shadow-sm text-center p-3">
-                  <h5>Total Tickets</h5>
-                  <h1 className="display-4">{stats.total}</h1>
+                <div className="card stat-card h-100 text-center p-3">
+                  <i className="bi bi-ticket-perforated fs-2 mb-2 text-primary"></i>
+                  <h1 className="display-5">{stats.total}</h1>
+                  <p className="text-muted mb-0">Total Tickets</p>
                 </div>
               </div>
               <div className="col-6 mb-4">
-                <div className="card bg-success text-white h-100 shadow-sm text-center p-3">
-                  <h5>Resolved</h5>
-                  <h1 className="display-4">{stats.resolved}</h1>
+                <div className="card stat-card h-100 text-center p-3">
+                  <i className="bi bi-check-circle fs-2 mb-2 text-success"></i>
+                  <h1 className="display-5">{stats.resolved}</h1>
+                  <p className="text-muted mb-0">Resolved Tickets</p>
                 </div>
               </div>
-              <div className="col-6">
-                <div className="card bg-warning text-dark h-100 shadow-sm text-center p-3">
-                  <h5>Pending</h5>
-                  <h1 className="display-4">{stats.pending}</h1>
+              <div className="col-6 mb-4">
+                <div className="card stat-card h-100 text-center p-3">
+                  <i className="bi bi-clock-history fs-2 mb-2 text-warning"></i>
+                  <h1 className="display-5">{stats.pending}</h1>
+                  <p className="text-muted mb-0">Pending Tickets</p>
                 </div>
               </div>
-              <div className="col-6">
-                <div className="card bg-info text-white h-100 shadow-sm text-center p-3">
-                  <h5>Avg. Resolution</h5>
-                  <h1 className="display-4">{stats.avgTime}</h1>
+              <div className="col-6 mb-4">
+                <div className="card stat-card h-100 text-center p-3">
+                  <i className="bi bi-speedometer2 fs-2 mb-2 text-info"></i>
+                  <h1 className="display-5">{stats.avgTime}</h1>
+                  <p className="text-muted mb-0">Avg. Resolution Time</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Footer */}
       <footer className="bg-dark text-light py-5 mt-5">
         <div className="container">
           <div className="row">
-            <div className="col-md-4 mb-4">
+            <div className="col-md-4 mb-4" id="about">
               <h5>Company</h5>
               <ul className="list-unstyled">
-                <li><a href="#story" className="text-light text-decoration-none">Our Story</a></li>
+                <li><a href="#about" className="text-light text-decoration-none">Our Story</a></li>
                 <li><a href="#careers" className="text-light text-decoration-none">Careers</a></li>
                 <li><a href="#contact" className="text-light text-decoration-none">Contact</a></li>
               </ul>
             </div>
-            <div className="col-md-4 mb-4">
+            <div className="col-md-4 mb-4" id="careers">
               <h5>Resources</h5>
               <ul className="list-unstyled">
                 <li><a href="#docs" className="text-light text-decoration-none">Documentation</a></li>
@@ -201,16 +209,16 @@ function TicketsPage() {
                 <li><a href="#privacy" className="text-light text-decoration-none">Privacy Policy</a></li>
               </ul>
             </div>
-            <div className="col-md-4 mb-4">
+            <div className="col-md-4 mb-4" id="contact">
               <h5>Get Started</h5>
               <button className="btn btn-outline-light">Free Trial</button>
-              <p className="mt-3">500 Terry Francine Street<br/>San Francisco, CA 94158</p>
+              <p className="mt-3"> New Horizon College<br />Bangalore, India</p>
             </div>
           </div>
           <div className="row mt-4 pt-3 border-top">
             <div className="col-12 text-center">
               <p className="mb-0 text-muted">
-                © 2035 ResolveRight. Powered by Vlzx
+                © 2035 ResolveRight. Powered by Us
               </p>
             </div>
           </div>

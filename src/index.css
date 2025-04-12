@@ -49,6 +49,8 @@ code {
 
 /* Header */
 .header-strip {
+  position: sticky;
+  top:0;
   background-color: var(--header-bg);
   padding: 25px 0;
  /* Reduced left padding on header */
@@ -347,8 +349,147 @@ footer a:hover {
 .how-it-works-section .btn-primary:hover {
   background-color: #084298;
 }
+#how-it-works .row {
+  gap: 2rem; /* Adds space between the image and text columns */
+}
+
+#how-it-works img {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
 .stats-section h2 {
   font-size: 3.0rem; /* Increase or tweak as needed */
   color: #001F3F;     /* Optional: Dark Blue */
   font-weight: bold;
+}
+
+/* Ticket Dashboard */
+.ticket-heading {
+  color: #1d2a3e;         /* Change color (blue) */
+  font-size: 2.5rem;      /* Change font size */
+  font-family: 'Poppins', sans-serif;  /* Change font */
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.ticket-scroll-area {
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: #faf0e7;
+}
+
+.ticket-card {
+  transition: transform 0.2s ease;
+}
+
+.ticket-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Badge Styling */
+.badge {
+  font-size: 0.9rem;
+  padding: 0.4em 0.6em;
+}
+
+.bg-primary {
+  background-color: #0d6efd !important;
+}
+
+.bg-success {
+  background-color: #198754 !important;
+}
+
+.bg-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.bg-info {
+  background-color: #0dcaf0 !important;
+}
+
+/* Stats Cards */
+.card h5 {
+  font-size: 1.1rem;
+}
+
+.card .display-4 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+/* Footer */
+footer {
+  background-color: #212529;
+  color: #ccc;
+}
+
+footer h5 {
+  color: white;
+  margin-bottom: 1rem;
+}
+
+footer a {
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+footer a:hover {
+  color: #fff;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .header-strip {
+    text-align: center;
+  }
+
+  .menu-box {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .ticket-scroll-area {
+    max-height: none;
+  }
+
+  .card .display-4 {
+    font-size: 2rem;
+  }
+}
+/* Pie Chart Container */
+.card.bg-white {
+  background-color: #fff !important;
+}
+
+/* Statistic Cards Styling */
+.stat-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+html {
+  scroll-behavior: smooth;
+}
+/* CTA Button Container Fix */
+.cta-buttons {
+  gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .cta-buttons {
+    justify-content: center;
+  }
 }
